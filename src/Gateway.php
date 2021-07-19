@@ -1,69 +1,115 @@
 <?php
-namespace Omnipay\IPay88;
+
+namespace Omnipay\PayEx;
 
 use Omnipay\Common\AbstractGateway;
 
 /**
- * iPay8 Gateway Driver for Omnipay
+ * Store Check payment gateway
  *
- * This driver is based on
- * Online Payment Switching Gateway Technical Specification Version 1.6.1
- * @link https://drive.google.com/file/d/0B4YUBYSgSzmAbGpjUXMyMWx6S2s/view?usp=sharing
+ * This is an example of a custom gateway. It simply extends the existing
+ * Omnipay Manual payment gateway.
+ *
+ * For more information about developing custom gateways, please see
+ * https://github.com/omnipay/omnipay
  */
+
 class Gateway extends AbstractGateway
 {
     public function getName()
     {
-        return 'iPay88';
+        return 'PayEx';
     }
 
     public function getDefaultParameters()
     {
-        return [
-            'merchantKey' => '',
-            'merchantCode' => '',
-            'backendUrl' => '',
-        ];
+        return array(
+            'accountNumber' => '83157690',
+            'encryptionKey' => 'uAcjb8UFz9h2xCCqz3Yz',
+            'language' => array(
+                'English' => 'en-US',
+                'Swedish' => 'sv-SE',
+                'Norway' => 'nb-NO',
+                'Danish' => 'da-DK',
+                'Spanish' => 'es-ES',
+                'German' => 'de-DE',
+                'Finnish' => 'fi-FI',
+                'French' => 'fr-FR',
+                'Polish' => 'pl-PL',
+                'Czech' => 'cs-CZ',
+                'Hungarian' => 'hu-HU'
+            ),
+            'vat' => '0',
+            'testMode' => array(
+                'True' => 'true',
+                'False' => 'false'
+            ),
+        );
     }
 
-    public function getMerchantKey()
+    public function getAccountNumber()
     {
-        return $this->getParameter('merchantKey');
+        return $this->getParameter('accountNumber');
     }
 
-    public function setMerchantKey($merchantKey)
+    public function setAccountNumber($value)
     {
-        return $this->setParameter('merchantKey', $merchantKey);
+        return $this->setParameter('accountNumber', $value);
     }
 
-    public function getMerchantCode()
+    public function getEncryptionKey()
     {
-        return $this->getParameter('merchantCode');
+        return $this->getParameter('encryptionKey');
     }
 
-    public function setMerchantCode($merchantCode)
+    public function setEncryptionKey($value)
     {
-        return $this->setParameter('merchantCode', $merchantCode);
+        return $this->setParameter('encryptionKey', $value);
     }
 
-    public function getBackendUrl()
+    public function getLanguage()
     {
-        return $this->getParameter('backendUrl');
+        return $this->getParameter('language');
     }
 
-    public function setBackendUrl($backendUrl)
+    public function setLanguage($value)
     {
-        return $this->setParameter('backendUrl', $backendUrl);
+        return $this->setParameter('language', $value);
     }
 
-    public function purchase(array $parameters = array())
+    public function getVat()
     {
-        return $this->createRequest('\Omnipay\IPay88\Message\PurchaseRequest', $parameters);
+        return $this->getParameter('vat');
     }
 
-    public function completePurchase(array $parameters = array())
+    public function setVat($value)
     {
-        return $this->createRequest('\Omnipay\IPay88\Message\CompletePurchaseRequest', $parameters);
+        return $this->setParameter('vat', intval($value));
+    }
+
+    public function getTestMode()
+    {
+        return ($this->getParameter('testMode') == 'true') ? true : false;
+    }
+
+    public function setTestMode($value)
+    {
+        return $this->setParameter('testMode', $value);
+    }
+
+    public function authorize(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\PayEx\Message\PxAuthorizeRequest', $parameters);
+    }
+
+    public function capture(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\PayEx\Message\PxCaptureRequest', $parameters);
+    }
+
+    public function completeAuthorize(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\PayEx\Message\PxCompleteAuthorizeRequest', $parameters);
     }
 
 }
