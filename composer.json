@@ -1,0 +1,27 @@
+{
+    "name": "radicals-io/omnipay-payex",
+    "description": "PayEx gateway for Omnipay payment processing library",
+    "keywords": [
+        "omnipay",
+        "PayEx"
+    ],
+    "type": "library",
+    "require": {
+        "omnipay/common": "^3.0.0",
+        "php-http/guzzle6-adapter": "^1.1"
+    },
+    "require-dev": {
+        "omnipay/tests": "^3.0.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Terence",
+            "email": "terence@radicals.io"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": { "Omnipay\\IPay88\\" : "src/" }
+    }
+}
