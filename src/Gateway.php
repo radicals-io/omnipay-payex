@@ -24,27 +24,25 @@ class Gateway extends AbstractGateway
     public function getDefaultParameters()
     {
         return array(
-            'accountNumber' => '83157690',
-            'encryptionKey' => 'uAcjb8UFz9h2xCCqz3Yz',
-            'language' => array(
-                'English' => 'en-US',
-                'Swedish' => 'sv-SE',
-                'Norway' => 'nb-NO',
-                'Danish' => 'da-DK',
-                'Spanish' => 'es-ES',
-                'German' => 'de-DE',
-                'Finnish' => 'fi-FI',
-                'French' => 'fr-FR',
-                'Polish' => 'pl-PL',
-                'Czech' => 'cs-CZ',
-                'Hungarian' => 'hu-HU'
-            ),
-            'vat' => '0',
-            'testMode' => array(
-                'True' => 'true',
-                'False' => 'false'
-            ),
+            'username' => '',
+            'secret' => '',
+            'testMode' => false,
         );
+    }
+
+    public function authentication()
+    {
+
+    }
+
+    /**
+     *
+     * @param array $parameters
+     * @return \Omnipay\PayEx\Message\PurchaseRequest
+     */
+    public function purchase(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Billplz\Message\PurchaseRequest', $parameters);
     }
 
     public function getAccountNumber()
@@ -57,59 +55,13 @@ class Gateway extends AbstractGateway
         return $this->setParameter('accountNumber', $value);
     }
 
-    public function getEncryptionKey()
+    public function getSecret()
     {
-        return $this->getParameter('encryptionKey');
+        return $this->getParameter('secret');
     }
 
-    public function setEncryptionKey($value)
+    public function setSecret($value)
     {
-        return $this->setParameter('encryptionKey', $value);
+        return $this->setParameter('secret', $value);
     }
-
-    public function getLanguage()
-    {
-        return $this->getParameter('language');
-    }
-
-    public function setLanguage($value)
-    {
-        return $this->setParameter('language', $value);
-    }
-
-    public function getVat()
-    {
-        return $this->getParameter('vat');
-    }
-
-    public function setVat($value)
-    {
-        return $this->setParameter('vat', intval($value));
-    }
-
-    public function getTestMode()
-    {
-        return ($this->getParameter('testMode') == 'true') ? true : false;
-    }
-
-    public function setTestMode($value)
-    {
-        return $this->setParameter('testMode', $value);
-    }
-
-    public function authorize(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\PayEx\Message\PxAuthorizeRequest', $parameters);
-    }
-
-    public function capture(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\PayEx\Message\PxCaptureRequest', $parameters);
-    }
-
-    public function completeAuthorize(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\PayEx\Message\PxCompleteAuthorizeRequest', $parameters);
-    }
-
 }
