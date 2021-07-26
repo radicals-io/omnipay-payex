@@ -26,13 +26,8 @@ class Gateway extends AbstractGateway
         return array(
             'username' => '',
             'secret' => '',
-            'testMode' => false,
+            'testMode' => false
         );
-    }
-
-    public function authentication()
-    {
-
     }
 
     /**
@@ -42,17 +37,27 @@ class Gateway extends AbstractGateway
      */
     public function purchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Billplz\Message\PurchaseRequest', $parameters);
+        return $this->createRequest('\Omnipay\PayEx\Message\PurchaseRequest', $parameters);
     }
 
-    public function getAccountNumber()
+    /**
+     *
+     * @param array $parameters
+     * @return \Omnipay\PayEx\Message\CompletePurchaseRequest
+     */
+    public function completePurchase(array $parameters = array())
     {
-        return $this->getParameter('accountNumber');
+        return $this->createRequest('\Omnipay\PayEx\Message\CompletePurchaseRequest', $parameters);
     }
 
-    public function setAccountNumber($value)
+    public function getUsername()
     {
-        return $this->setParameter('accountNumber', $value);
+        return $this->getParameter('username');
+    }
+
+    public function setUsername($value)
+    {
+        return $this->setParameter('username', $value);
     }
 
     public function getSecret()

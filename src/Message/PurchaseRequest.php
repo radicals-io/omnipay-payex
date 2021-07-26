@@ -1,50 +1,41 @@
 <?php
 
-namespace Omnipay\IPay88\Message;
+namespace Omnipay\PayEx\Message;
 
+/**
+ * Purchase Request
+ */
 class PurchaseRequest extends AbstractRequest
 {
+    protected function createResponse($data, $statusCode)
+    {
+        return $this->response = new PurchaseResponse($this, $data, $statusCode);
+    }
+
+    public function getHttpMethod()
+    {
+        return 'POST';
+    }
+
+    public function getAPI()
+    {
+        return 'PaymentIntents';
+    }
+
     public function getData()
     {
-        $this->guardParameters();
-
-        return [
-            'MerchantCode' => $this->getMerchantCode(),
-            'PaymentId' => '',
-            'RefNo' => $this->getTransactionId(),
-            'Amount' => number_format($this->getAmount(), 2),
-            'Currency' => $this->getCurrency(),
-            'ProdDesc' => $this->getDescription(),
-            'UserName' => $this->getCard()->getBillingName(),
-            'UserEmail' => $this->getCard()->getEmail(),
-            'UserContact' => $this->getCard()->getNumber(),
-            'Remark' => '',
-            'Lang' => '',
-            'SignatureType' => 'SHA256',
-            'Signature' => $this->signature(
-                $this->getMerchantKey(),
-                $this->getMerchantCode(),
-                $this->getTransactionId(),
-                $this->getAmount(),
-                $this->getCurrency()
-            ),
-            'ResponseURL' => $this->getReturnUrl(),
-            'BackendURL' => $this->getBackendUrl(),
+        $data = [
+            'amount' => intval($this->getParameter('amount')*100),
+            'currency' => $this->getParameter('currency'),
+            'collection_id' => $this->getParameter('collectionId'),
+            'customer_name' => $this->getParameter('name'),
+            'email' => $this->getParameter('email'),
+            'payment_type' => $this->getParameter('payment_type'),
+            'return_url' => $this->getParameter('returnUrl'),
+            'callback_url' => $this->getParameter('notifyUrl'),
+            'reject_url' => $this->getParameter('cancelUrl'),
         ];
+
+        return [$data];
     }
-
-    public function sendData($data)
-    {
-        return $this->response = new PurchaseResponse($this, $data);
-    }
-
-    private function signature($merchantKey, $merchantCode, $refNo, $amount, $currency)
-    {
-        $amount = str_replace([',', '.'], '', $amount);
-
-        $paramsInArray = [$merchantKey, $merchantCode, $refNo, $amount, $currency];
-
-        return $this->createSignatureFromString(implode('', $paramsInArray));
-    }
-
 }

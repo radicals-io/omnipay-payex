@@ -1,50 +1,29 @@
 <?php
 
-namespace Omnipay\IPay88\Message;
+namespace Omnipay\PayEx\Message;
 
+/**
+ * Authorize Request
+ */
 class CompletePurchaseRequest extends AbstractRequest
 {
-    protected $endpoint = 'https://payment.ipay88.com.my/epayment/enquiry.asp';
+    protected function createResponse($data, $statusCode)
+    {
+        return $this->response = new CompletePurchaseResponse($this, $data, $statusCode);
+    }
+
+    public function getHttpMethod()
+    {
+        return 'GET';
+    }
+
+    public function getAPI()
+    {
+        return 'Transactions/' . $this->getTxnId();
+    }
 
     public function getData()
     {
-        $this->guardParameters();
-
-        $data = $this->httpRequest->request->all();
-
-        $data['ComputedSignature'] = $this->signature(
-            $this->getMerchantKey(),
-            $this->getMerchantCode(),
-            $data['PaymentId'],
-            $data['RefNo'],
-            $data['Amount'],
-            $data['Currency'],
-            $data['Status']
-        );
-
-        return $data;
-    }
-
-    public function sendData($data)
-    {
-        $data['ReQueryStatus'] = $this->httpClient
-            ->request('post', $this->endpoint . '?' . http_build_query([
-                'MerchantCode' => $this->getMerchantCode(),
-                'RefNo' => $data['RefNo'],
-                'Amount' => $data['Amount'],
-            ]), [], json_encode([]))
-            ->getBody()
-            ->getContents();
-
-        return $this->response = new CompletePurchaseResponse($this, $data);
-    }
-
-    protected function signature($merchantKey, $merchantCode, $paymentId, $refNo, $amount, $currency, $status)
-    {
-        $amount = str_replace([',', '.'], '', $amount);
-
-        $paramsInArray = [$merchantKey, $merchantCode, $paymentId, $refNo, $amount, $currency, $status];
-
-        return $this->createSignatureFromString(implode('', $paramsInArray));
+        return [];
     }
 }
