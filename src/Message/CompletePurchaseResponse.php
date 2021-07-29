@@ -16,7 +16,7 @@ class CompletePurchaseResponse extends AbstractResponse
         $this->statusCode = $statusCode;
 
         $this->status = false;
-        if ($this->data[0]['status'] == 'Sales') {
+        if (!empty($this->data) && $this->data[0]['auth_code'] == '00') {
             $this->status = true;
         }
     }

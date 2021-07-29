@@ -69,4 +69,14 @@ class Gateway extends AbstractGateway
     {
         return $this->setParameter('secret', $value);
     }
+
+    public function verifySignature($responseData)
+    {
+        if (empty($responseData['signature'])) {
+            return false;
+        }
+
+        $secret = $this->getSecret();
+        return $responseData['signature'] == hash('sha512', $secret . '|' . $responseData['txn_id']);
+    }
 }
